@@ -74,6 +74,8 @@ def classify():
             try:
                 import extract_msg
                 import io
+                from bs4 import BeautifulSoup
+                
                 file_bytes = file.read()
                 file_stream = io.BytesIO(file_bytes)
                 
@@ -83,8 +85,16 @@ def classify():
                 subject = msg.subject or "(Sem assunto)"
                 sender = msg.sender or "(Remetente desconhecido)"
                 
-                # Try different body properties
-                body = msg.body or msg.htmlBody or msg.rtfBody or ""
+                # Try to get body text
+                body = None
+                if msg.body:
+                    body = msg.body
+                elif msg.htmlBody:
+                    # Extract text from HTML
+                    soup = BeautifulSoup(msg.htmlBody, 'html.parser')
+                    body = soup.get_text('\n', strip=True)
+                elif msg.rtfBody:
+                    body = msg.rtfBody
                 
                 # Build text content
                 text_content += f"Assunto: {subject}\n\n"
@@ -98,8 +108,44 @@ def classify():
             except Exception as e:
                 print(f"MSG extraction error: {e}")
                 return jsonify({"error": f"Erro ao ler arquivo MSG: {str(e)}"}), 400
+        elif file.filename.endswith('.eml'):
+            try:
+                import email
+                from email import policy
+                from bs4 import BeautifulSoup
+                
+                file_bytes = file.read()
+                msg = email.message_from_bytes(file_bytes, policy=policy.default)
+                
+                # Extract subject and sender
+                subject = msg.get('subject', '(Sem assunto)')
+                sender = msg.get('from', '(Remetente desconhecido)')
+                
+                # Extract body
+                body = ""
+                if msg.is_multipart():
+                    for part in msg.walk():
+                        content_type = part.get_content_type()
+                        if content_type == 'text/plain':
+                            body += part.get_content()
+                        elif content_type == 'text/html' and not body:
+                            html = part.get_content()
+                            soup = BeautifulSoup(html, 'html.parser')
+                            body = soup.get_text('\n', strip=True)
+                else:
+                    body = msg.get_content()
+                
+                # Build text content
+                text_content += f"Assunto: {subject}\n\n"
+                text_content += f"De: {sender}\n\n"
+                text_content += f"{body}\n" if body else "(Email sem corpo)\n"
+                
+                print(f"EML extraction successful: {len(text_content)} chars")
+            except Exception as e:
+                print(f"EML extraction error: {e}")
+                return jsonify({"error": f"Erro ao ler arquivo EML: {str(e)}"}), 400
         else:
-            return jsonify({"error": "Formato não suportado. Use .txt, .pdf ou .msg"}), 400
+            return jsonify({"error": "Formato não suportado. Use .txt, .pdf, .msg ou .eml"}), 400
     
     # Handle Text Input
     elif 'text' in request.form:
