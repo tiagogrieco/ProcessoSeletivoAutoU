@@ -3,4 +3,5 @@ python-dotenv
 openai
 nltk
 pypdf
+pdfplumber
 gunicorn

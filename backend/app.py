@@ -24,8 +24,12 @@ def classify():
         file = request.files['file']
         if file.filename.endswith('.pdf'):
             try:
-                # Read PDF with improved error handling
-                pdf_reader = pypdf.PdfReader(file)
+                # Try pypdf first (faster)
+                import io
+                file_bytes = file.read()
+                file_stream = io.BytesIO(file_bytes)
+                
+                pdf_reader = pypdf.PdfReader(file_stream)
                 pages_extracted = 0
                 pages_failed = 0
                 
@@ -37,8 +41,27 @@ def classify():
                             pages_extracted += 1
                     except Exception as extraction_error:
                         pages_failed += 1
-                        print(f"Warning: Could not extract text from page {i+1}: {extraction_error}")
+                        print(f"Warning: PyPDF failed on page {i+1}: {extraction_error}")
                         continue
+                
+                # If PyPDF failed completely, try pdfplumber as fallback
+                if pages_extracted == 0 and pages_failed > 0:
+                    try:
+                        import pdfplumber
+                        file_stream.seek(0)  # Reset stream
+                        with pdfplumber.open(file_stream) as pdf:
+                            print(f"Trying pdfplumber fallback ({len(pdf.pages)} pages)...")
+                            for i, page in enumerate(pdf.pages):
+                                try:
+                                    text = page.extract_text()
+                                    if text and text.strip():
+                                        text_content += text + "\n"
+                                        pages_extracted += 1
+                                except Exception as e:
+                                    print(f"pdfplumber also failed on page {i+1}: {e}")
+                                    continue
+                    except ImportError:
+                        print("pdfplumber not available for fallback")
                 
                 # Log extraction statistics
                 print(f"PDF extraction: {pages_extracted} pages OK, {pages_failed} pages failed")
