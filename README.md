@@ -169,7 +169,58 @@ Edite os templates de resposta em `nlp_engine.py` (linhas 108-111)
 
 ---
 
-## 📝 Licença
+## � Roadmap - Melhorias Futuras
+
+### Versão 2.0 (Próximas Iterações)
+
+#### 📊 **Processamento em Lote**
+- Upload de arquivo ZIP contendo múltiplos emails
+- Processamento paralelo de 100+ emails simultaneamente
+- Dashboard com métricas:
+  - Total processado
+  - Taxa Produtivo/Improdutivo
+  - Tempo médio de resposta
+  - Gráficos de tendências
+
+#### 🔗 **API de Integração**
+- Endpoint REST público para integrações externas
+- Webhook para receber emails via POST
+- Link direto: `GET /api/classify?email=base64_email`
+- Autenticação via API Key
+- Rate limiting e quotas
+
+#### ✉️ **Resposta Automática Real**
+- Integração com **Gmail API**
+- Integração com **Microsoft Graph (Outlook)**
+- Fluxo completo:
+  1. Email chega na caixa de entrada
+  2. Sistema classifica automaticamente
+  3. Se improdutivo → responde automaticamente
+  4. Se produtivo → alerta humano + sugestão de resposta
+- Modo de revisão antes de enviar
+
+#### 🧠 **Machine Learning Próprio**
+- Fine-tuning de modelo com histórico de emails da empresa
+- Aprendizado contínuo com feedback humano
+- Redução de dependência de APIs externas
+- Modelo on-premise para dados sensíveis
+
+#### 🔐 **Recursos Enterprise**
+- Sistema de login (OAuth)
+- Multi-tenancy (várias empresas)
+- Permissões por usuário/grupo
+- Auditoria completa de ações
+- LGPD compliance
+
+#### 📈 **Analytics Avançado**
+- Relatórios semanais/mensais
+- Identificação de tópicos recorrentes
+- Detecção de urgência em emails
+- Sugestão de FAQs baseado em padrões
+
+---
+
+## �📝 Licença
 
 Este projeto foi desenvolvido como parte do Processo Seletivo da AutoU.
 
