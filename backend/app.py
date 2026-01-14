@@ -70,8 +70,23 @@ def classify():
                 return jsonify({"error": f"Erro ao abrir PDF: {str(e)}"}), 400
         elif file.filename.endswith('.txt'):
             text_content = file.read().decode('utf-8')
+        elif file.filename.endswith('.msg'):
+            try:
+                import extract_msg
+                import io
+                file_bytes = file.read()
+                file_stream = io.BytesIO(file_bytes)
+                
+                msg = extract_msg.Message(file_stream)
+                # Extract subject, body, and sender
+                text_content += f"Assunto: {msg.subject}\n\n"
+                text_content += f"De: {msg.sender}\n\n"
+                text_content += f"{msg.body}\n"
+                print(f"MSG extraction successful: {len(text_content)} chars")
+            except Exception as e:
+                return jsonify({"error": f"Erro ao ler arquivo MSG: {str(e)}"}), 400
         else:
-            return jsonify({"error": "Unsupported file format"}), 400
+            return jsonify({"error": "Formato não suportado. Use .txt, .pdf ou .msg"}), 400
     
     # Handle Text Input
     elif 'text' in request.form:
