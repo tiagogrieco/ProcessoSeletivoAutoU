@@ -1,11 +1,9 @@
 const tabBtns = document.querySelectorAll('.tab-btn');
 const tabContents = document.querySelectorAll('.tab-content');
 const fileInput = document.getElementById('file-input');
-const uploadBtn = document.getElementById('upload-btn');
 const fileNameDisplay = document.getElementById('file-name');
-const uploadArea = document.getElementById('drop-zone');
+const uploadArea = document.getElementById('upload-area');
 const textInput = document.getElementById('email-text');
-const textBtn = document.getElementById('text-btn');
 const loadingOverlay = document.getElementById('loading-overlay');
 const resultsSection = document.getElementById('results-section');
 const categoryBadge = document.getElementById('category-badge');
@@ -47,7 +45,6 @@ function handleFile(file) {
     if (!file) return;
     currentFile = file;
     fileNameDisplay.textContent = `Arquivo selecionado: ${file.name}`;
-    uploadBtn.textContent = "Processar Arquivo";
     uploadBtn.disabled = false;
 }
 
