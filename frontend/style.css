@@ -209,7 +209,8 @@ textarea:focus {
     border-color: var(--primary);
 }
 
-.action-btn {
+.action-btn,
+.primary-btn {
     width: 100%;
     margin-top: 1.5rem;
     padding: 1rem;
@@ -220,10 +221,11 @@ textarea:focus {
     font-weight: 600;
     font-size: 1.1rem;
     cursor: pointer;
-    transition: transform 0.2s, opacity 0.2s;
+    transition: transform 0.2s, opacity 0.2s, box-shadow 0.3s;
 }
 
-.action-btn:hover:not(:disabled) {
+.action-btn:hover:not(:disabled),
+.primary-btn:hover {
     transform: translateY(-2px);
     box-shadow: 0 10px 20px -10px var(--primary);
 }
