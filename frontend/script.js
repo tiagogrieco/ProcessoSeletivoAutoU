@@ -97,6 +97,11 @@ function afficherResults(result) {
     categoryBadge.className = 'badge ' + (isProd ? 'produtivo' : 'improdutivo');
     categoryBadge.textContent = isProd ? 'Produtivo' : 'Improdutivo';
 
+    // Display original email
+    const emailOriginal = document.getElementById('email-original');
+    emailOriginal.textContent = result.raw_text_preview || result.email_original || 'Texto não disponível';
+
+    // Display response
     responseContent.textContent = result.reply;
 
     resultsSection.classList.remove('hidden');

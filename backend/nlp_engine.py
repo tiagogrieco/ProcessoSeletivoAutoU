@@ -77,7 +77,7 @@ class NLPEngine:
             return {
                 "category": category,
                 "reply": reply,
-                "raw_text_preview": raw_text[:100] + "..."
+                "raw_text_preview": raw_text if len(raw_text) <= 1000 else raw_text[:1000] + "..."
             }
 
         except Exception as e:
@@ -113,5 +113,5 @@ class NLPEngine:
         return {
             "category": category,
             "reply": reply,
-            "raw_text_preview": text[:100] + "..."
+            "raw_text_preview": text if len(text) <= 1000 else text[:1000] + "..."
         }
