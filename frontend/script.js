@@ -47,14 +47,25 @@ function handleFile(file) {
     fileNameDisplay.textContent = `Arquivo selecionado: ${file.name}`;
 }
 
-// Text Handling
-textInput.addEventListener('input', () => {
-    textBtn.disabled = textInput.value.trim().length === 0;
-});
+// Text Handling - removed, now handled by processText() function
 
-// API Calls
-uploadBtn.addEventListener('click', () => submitData({ file: currentFile }));
-textBtn.addEventListener('click', () => submitData({ text: textInput.value }));
+// Global functions called from HTML
+function processFile() {
+    if (!currentFile) {
+        alert('Por favor, selecione um arquivo primeiro!');
+        return;
+    }
+    submitData({ file: currentFile });
+}
+
+function processText() {
+    const text = textInput.value.trim();
+    if (!text) {
+        alert('Por favor, insira algum texto!');
+        return;
+    }
+    submitData({ text });
+}
 
 async function submitData(data) {
     setLoading(true);
