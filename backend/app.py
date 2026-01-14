@@ -78,12 +78,25 @@ def classify():
                 file_stream = io.BytesIO(file_bytes)
                 
                 msg = extract_msg.Message(file_stream)
-                # Extract subject, body, and sender
-                text_content += f"Assunto: {msg.subject}\n\n"
-                text_content += f"De: {msg.sender}\n\n"
-                text_content += f"{msg.body}\n"
+                
+                # Extract with null checks
+                subject = msg.subject or "(Sem assunto)"
+                sender = msg.sender or "(Remetente desconhecido)"
+                
+                # Try different body properties
+                body = msg.body or msg.htmlBody or msg.rtfBody or ""
+                
+                # Build text content
+                text_content += f"Assunto: {subject}\n\n"
+                text_content += f"De: {sender}\n\n"
+                if body:
+                    text_content += f"{body}\n"
+                else:
+                    text_content += "(Email sem corpo de texto)\n"
+                    
                 print(f"MSG extraction successful: {len(text_content)} chars")
             except Exception as e:
+                print(f"MSG extraction error: {e}")
                 return jsonify({"error": f"Erro ao ler arquivo MSG: {str(e)}"}), 400
         else:
             return jsonify({"error": "Formato não suportado. Use .txt, .pdf ou .msg"}), 400
