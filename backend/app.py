@@ -1,11 +1,6 @@
 import os
 from flask import Flask, request, jsonify, send_from_directory
-
-# Add backend directory to path for import
-import sys
-sys.path.insert(0, os.path.dirname(__file__))
-
-from nlp_engine import NLPEngine
+from .nlp_engine import NLPEngine
 import pypdf
 
 app = Flask(__name__, static_folder="../frontend", static_url_path="")
