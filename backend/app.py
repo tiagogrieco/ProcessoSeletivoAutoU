@@ -24,18 +24,27 @@ def classify():
         file = request.files['file']
         if file.filename.endswith('.pdf'):
             try:
-                # Read PDF
+                # Read PDF with improved error handling
                 pdf_reader = pypdf.PdfReader(file)
-                for page in pdf_reader.pages:
+                pages_extracted = 0
+                pages_failed = 0
+                
+                for i, page in enumerate(pdf_reader.pages):
                     try:
                         text = page.extract_text()
-                        if text:
+                        if text and text.strip():
                             text_content += text + "\n"
+                            pages_extracted += 1
                     except Exception as extraction_error:
-                        print(f"Warning: Could not extract text from a page: {extraction_error}")
+                        pages_failed += 1
+                        print(f"Warning: Could not extract text from page {i+1}: {extraction_error}")
                         continue
+                
+                # Log extraction statistics
+                print(f"PDF extraction: {pages_extracted} pages OK, {pages_failed} pages failed")
+                
             except Exception as e:
-                return jsonify({"error": f"Failed to read PDF file: {str(e)}"}), 400
+                return jsonify({"error": f"Erro ao abrir PDF: {str(e)}"}), 400
         elif file.filename.endswith('.txt'):
             text_content = file.read().decode('utf-8')
         else:
@@ -50,8 +59,11 @@ def classify():
 
     if not text_content.strip():
         if 'file' in request.files and request.files['file'].filename.endswith('.pdf'):
-            return jsonify({"error": "Não foi possível extrair texto do PDF. O arquivo pode ser uma imagem escaneada. Tente copiar e colar o texto na aba 'Texto Direto'."}), 400
-        return jsonify({"error": "Nenhum conteúdo de texto encontrado para análise."}), 400
+            return jsonify({
+                "error": "Não foi possível extrair texto do PDF.",
+                "suggestion": "Este PDF pode ser:\n• Imagem escaneada (sem texto)\n• Protegido/criptografado\n• Com formatação problemática\n\n💡 Solução: Abra o PDF, copie o texto e use a aba 'Texto Direto'."
+            }), 400
+        return jsonify({"error": "Nenhum conteúdo encontrado para análise."}), 400
 
     # Process
     result = nlp.classify_and_respond(text_content)
