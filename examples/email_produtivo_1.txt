@@ -1,0 +1,13 @@
+Assunto: Problema urgente com sistema de pagamento
+
+Prezados,
+
+Estou há dois dias tentando processar uma transferência bancária através do sistema, mas sempre quando vou finalizar a transação aparece a mensagem "Erro ao conectar com o servidor". 
+
+Já tentei usar navegadores diferentes e limpar o cache, mas nada funcionou. Preciso resolver isso com urgência pois tenho compromissos financeiros para hoje.
+
+Podem me ajudar?
+
+Atenciosamente,
+João Silva
+Cliente desde 2020
