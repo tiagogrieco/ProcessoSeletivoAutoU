@@ -45,7 +45,6 @@ function handleFile(file) {
     if (!file) return;
     currentFile = file;
     fileNameDisplay.textContent = `Arquivo selecionado: ${file.name}`;
-    uploadBtn.disabled = false;
 }
 
 // Text Handling
